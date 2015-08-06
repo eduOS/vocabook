@@ -45,6 +45,8 @@ function! s:Sdcv()
     "wincmd p
 endfunction
 
+autocmd VimLeave * if @% == 'd-tmp' | Python vocabnotebook.supervocab() | else | echo 'bye' | endif
+
 nnoremap <leader>d :call <SID>Sdcv()<cr>
 autocmd VimEnter *.mkd call <SID>LoadVNB()
 autocmd VimEnter *.markdown call <SID>LoadVNB()
