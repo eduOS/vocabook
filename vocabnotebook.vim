@@ -35,8 +35,9 @@ function! s:CloseDB()
     Python vocabnotebook.closedb()
 endfunction
 
-function! s:Sdcv()
-    let exp1=system('sdcv -n ' . shellescape(expand("<cword>")))
+function! s:Dict()
+    "let exp1=system('sdcv -n ' . shellescape(expand("<cword>")))
+    let exp1= Python vocabnotebook.supervca
     windo if expand("%")=="d-tmp" |q!|endif
     9sp d-tmp
     setlocal buftype=nofile bufhidden=delete noswapfile
@@ -45,9 +46,7 @@ function! s:Sdcv()
     "wincmd p
 endfunction
 
-autocmd VimLeave * if @% == 'd-tmp' | Python vocabnotebook.supervocab() | else | echo 'bye' | endif
-
-nnoremap <leader>d :call <SID>Sdcv()<cr>
+nnoremap <leader>d :call <SID>Dict()<cr>
 autocmd VimEnter *.mkd call <SID>LoadVNB()
 autocmd VimEnter *.markdown call <SID>LoadVNB()
 autocmd VimEnter *.md call <SID>LoadVNB()
