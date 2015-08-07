@@ -23,30 +23,27 @@ EOF
 
 "nnoremap <leader>v :set operatorfunc=<SID>VocabNoteBook<cr>g@
 "vnoremap <leader>v :<c-u>call <SID>VocabNoteBook(visualmode())<cr>
-nnoremap <leader>v :call <SID>VocabNoteBook()<cr>
+nnoremap <leader>v :Python vocabnotebook.main()<cr>
+nnoremap <leader>d :Python vocabnotebook.dict()<cr>
+
+"noremap <buffer> u :Python vocabnotebook.save_pos()<cr>
+"                   \u
+"                   \:Python vocabnotebook.recall_pos()<cr>
+"noremap <buffer> <C-R> :Python vocabnotebook.save_pos()<cr>
+"                       \<C-R>
+"                       \:Python vocabnotebook.recall_pos()<cr>
+
 autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
-function! s:VocabNoteBook()
-    Python vocabnotebook.main()
-endfunction
+if !exists("g:vo_marks")
+    let g:vo_marks = {}
+endif
 
 function! s:CloseDB()
     Python vocabnotebook.closedb()
 endfunction
 
-function! s:Dict()
-    "let exp1=system('sdcv -n ' . shellescape(expand("<cword>")))
-    let exp1= Python vocabnotebook.supervca
-    windo if expand("%")=="d-tmp" |q!|endif
-    9sp d-tmp
-    setlocal buftype=nofile bufhidden=delete noswapfile
-    1s/^/\=exp1/
-    normal gg
-    "wincmd p
-endfunction
-
-nnoremap <leader>d :call <SID>Dict()<cr>
 autocmd VimEnter *.mkd call <SID>LoadVNB()
 autocmd VimEnter *.markdown call <SID>LoadVNB()
 autocmd VimEnter *.md call <SID>LoadVNB()
