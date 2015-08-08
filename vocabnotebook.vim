@@ -26,13 +26,6 @@ EOF
 nnoremap <leader>v :Python vocabnotebook.main()<cr>
 nnoremap <leader>d :Python vocabnotebook.dict()<cr>
 
-"noremap <buffer> u :Python vocabnotebook.save_pos()<cr>
-"                   \u
-"                   \:Python vocabnotebook.recall_pos()<cr>
-"noremap <buffer> <C-R> :Python vocabnotebook.save_pos()<cr>
-"                       \<C-R>
-"                       \:Python vocabnotebook.recall_pos()<cr>
-
 autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
