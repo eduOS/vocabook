@@ -22,11 +22,24 @@ if not cur.execute("show tables like 'tag'"):
             word VARCHAR(100), \
             tag VARCHAR(100)""")
 
-def dump_to_MySQL():
+def dump_to_MySQL(wd):
     # extract the sentence the cursor is in
-    sql = "INSERT INTO notebook (word,sentence) VALUES(%s,%s)"
+    vim.command("let @b='Sentence'")
+    for i, j in enumerate(wn.synsets(wd)):
+        vim.command("let @a='%s'"% j.name)
+        vim.command(""":execute '/^\d\{1}\. ' . @a . '/+,/^' . @b . '/s/Tag:\s*(.*$)/\=setreg("d",submatch(1))/n'""")
+        tags = vim.eval('@d').split(',')
+        sql = "INSERT INTO tag (word,tag) VALUES(%s,%s)"
+        for tag in tags:
+            cur.execute(sql,(wd,tag,))
+        vim.command("qdq")
+        vim.command(""":execute '/^\d\{1}\. ' . @a . '/+,/^' . @b . '/s/Tag:\s*(.*$)/\=setreg("d",submatch(1))/n'""")
+        sql = "INSERT INTO notebook (word,sentence) VALUES(%s,%s)"
     cur.execute(sql,(wd,st,))
     con.commit()
+:/^ab/+,/^fg/s/def \([a-zA-Z_]*\)([a-z]*):$/\=setreg('D',submatch(1))/n
+:execute '/^' . @a . '/,/^' . @b . '/s/def \([a-zA-Z_]*\)([a-z]*):$/\=setreg("D",submatch(1))/n'
+:exe "/^" . @a . "/,/^" . @b . "/s/^def \([a-zA-Z_]*\)([a-z]*):$/\=setreg('D',submatch(1))/n"
 
 def bwrite(s):
     b = vim.current.buffer
@@ -40,24 +53,25 @@ def bwrite(s):
         b.append(s)
 
 def show_results(wd):
-    vim.command("windo if expand("%")=="d-tmp" |q!|endif")
+    vim.command('windo if expand("%")=="d-tmp" |q!|endif')
     vim.command("9sp d-tmp")
     vim.command("setlocal buftype=nofile bufhidden=delete noswapfile")
     for i,j in enumerate(wn.synsets(wd)):
         bwrite(i + ". " + j.name + " Definition: " + j.definition())
+        bwrite("Definition: " + j.definition())
         sql = """select tag from tag where word='%s'"""
         cur.execute(sql,(wd,)):
         rows = cur.fetchall()
         if rows is not None:
-            bwrite(":tags:")
+            bwrite("Tags: ")
             tags = ",".join(rows)
             bwrite(tags)
         sql = """select excerpts from notebook where word='%s'"""
         cur.execute(sql,(wd,)):
         rows = cur.fetchall()
         if rows is not None:
-            bwrite(":excerpts:")
-            bwrite(rows)
+            bwrite("Excerpts:")
+            bwrite(" ".join(rows))
         bwrite('\n')
 
 def show_in_buffer():
