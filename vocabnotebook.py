@@ -10,16 +10,17 @@ cur = con.cursor()
 if not cur.execute("show databases like 'VocabNB'"):
     cur.execute("CREATE DATABASE VocabNB")
 cur.execute("use VocabNB")
+
 if not cur.execute("show tables like 'notebook'"):
     cur.execute("""CREATE TABLE notebook(\
             id SMALLINT NOT NULL AUTO_INCREMENT PRIMARY KEY,\
             word VARCHAR(100) NOT NULL, \
             excerpts VARCHAR(50000)), \
             sentences VARCHAR(50000)""")
+
 if not cur.execute("show tables like 'tag'"):
     cur.execute("""CREATE TABLE tag(\
-            id SMALLINT NOT NULL AUTO_INCREMENT PRIMARY KEY,\
-            word VARCHAR(100), \
+            word_id SMALLINT, \
             tag VARCHAR(100)""")
 
 def dump_to_MySQL(wd):
@@ -28,18 +29,23 @@ def dump_to_MySQL(wd):
     for i, j in enumerate(wn.synsets(wd)):
         vim.command("let @a='%s'"% j.name)
         vim.command(""":execute '/^\d\{1}\. ' . @a . '/+,/^' . @b . '/s/Tag:\s*(.*$)/\=setreg("d",submatch(1))/n'""")
-        tags = vim.eval('@d').split(',')
-        sql = "INSERT INTO tag (word,tag) VALUES(%s,%s)"
+        sql = "SELECT id FROM notebook WHERE word=%s"
+        cur.execute(sql,(wd))
+        wd_id = cur.fetchone()
+        sql = "DELETE FROM tag WHERE word_id=%s"
+        cur.execute(sql,(wd_id))
+        tags = list(set(vim.eval('@d').split(',')))
+        sql = "INSERT INTO tag (word_id,tag) VALUES(%s,%s)"
         for tag in tags:
-            cur.execute(sql,(wd,tag,))
+            cur.execute(sql,(wd_id,tag,))
         vim.command("qdq")
-        vim.command(""":execute '/^\d\{1}\. ' . @a . '/+,/^' . @b . '/s/Tag:\s*(.*$)/\=setreg("d",submatch(1))/n'""")
-        sql = "INSERT INTO notebook (word,sentence) VALUES(%s,%s)"
-    cur.execute(sql,(wd,st,))
+        vim.command(""":execute '/^\d\{1}\. ' . @a . '/+,/^' . @b . '/s/Excerpts:\s*(.*$)/\=setreg("d",submatch(1))/n'""")
+        excerpts = cur.fetchone()
+        vim.command(""":execute '/^\d\{1}\. ' . @a . '/+,/^' . @b . '/s/Excerpts:\s*(.*$)/\=setreg("d",submatch(1))/n'""")
+        sentences = cur.fetchone()
+        sql = "UPDATE notebook SET excerpts=%s, sentences=%s"
+        cur.execute(sql,(excerpts,sentences,))
     con.commit()
-:/^ab/+,/^fg/s/def \([a-zA-Z_]*\)([a-z]*):$/\=setreg('D',submatch(1))/n
-:execute '/^' . @a . '/,/^' . @b . '/s/def \([a-zA-Z_]*\)([a-z]*):$/\=setreg("D",submatch(1))/n'
-:exe "/^" . @a . "/,/^" . @b . "/s/^def \([a-zA-Z_]*\)([a-z]*):$/\=setreg('D',submatch(1))/n"
 
 def bwrite(s):
     b = vim.current.buffer
