@@ -24,8 +24,6 @@ EOF
 "nnoremap <leader>v :set operatorfunc=<SID>VocabNoteBook<cr>g@
 "vnoremap <leader>v :<c-u>call <SID>VocabNoteBook(visualmode())<cr>
 nnoremap <leader>v :Python vocabnotebook.main()<cr>
-nnoremap <leader>d :Python vocabnotebook.dict()<cr>
-
 autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
