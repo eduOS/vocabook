@@ -27,10 +27,6 @@ nnoremap <leader>v :Python vocabnotebook.main()<cr>
 autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
-if !exists("g:vo_marks")
-    let g:vo_marks = {}
-endif
-
 function! s:CloseDB()
     Python vocabnotebook.closedb()
 endfunction
