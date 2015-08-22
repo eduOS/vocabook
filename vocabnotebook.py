@@ -23,9 +23,20 @@ if not cur.execute("show tables like 'tag'"):
                 word_id SMALLINT,
                 tags VARCHAR(800)) ENGINE=InnoDB""")
 
+def bwrite(s):
+    b = vim.current.buffer
+    # Never write more than two blank lines in a row
+    if not s.strip() and not b[-1].strip() and not b[-2].strip():
+        return
+
+    if not b[0]:
+        b[0] = s
+    else:
+        b.append(s)
 
 def dump_to_MySQL(wd):
-    # extract the sentence the cursor is in
+    " extract the sentence the cursor is in"
+    
     vim.command("let @b='Sentence'")
     for i, j in enumerate(wn.synsets(wd)):
         w_name = j.name()
@@ -62,23 +73,12 @@ def dump_to_MySQL(wd):
         print excerpts,sentences,tags
         con.commit()
 
-def bwrite(s):
-    b = vim.current.buffer
-    # Never write more than two blank lines in a row
-    if not s.strip() and not b[-1].strip() and not b[-2].strip():
-        return
-
-    if not b[0]:
-        b[0] = s
-    else:
-        b.append(s)
 
 def show_in_buffer(wd):
     vim.command('windo if expand("%")=="d-tmp" |q!|endif')
     vim.command("10sp d-tmp")
     vim.command("setlocal buftype=nofile bufhidden=delete noswapfile")
-    bwrite('<---press p to paste the sentence containing the word to one of the excerpt--->\n')
-    vim.command(":execute 'nnoremap <buffer> s :Python vocabnotebook.dump_to_MySQL(\"" + wd + "\")<cr>'")
+    bwrite('<---press p to paste the sentence containing the word to one of the excerpt; press c to clear all other entries--->\n')
     for i,j in enumerate(wn.synsets(wd)):
         w_name = str(j.name())
         bwrite(str(i) + ". " + w_name + " Definition: " + str(j.definition()))
@@ -98,6 +98,11 @@ def show_in_buffer(wd):
         bwrite("Sentences: "+" ".join(rows))
         bwrite('\n')
     vim.command("normal gg")
+    # delete all words except that one the cursor is in
+    vim.command(""":execute 'nnoremap <buffer> c {j"ey}ggdG"ep'""")
+    # before saving I should clear other entries, making sure only one is left
+    # need a if loop to ensure only one entry is left
+    vim.command(":execute 'nnoremap <buffer> s :Python vocabnotebook.dump_to_MySQL(\"" + wd + "\")<cr>'")
 
 def main():
     wd = vim.eval('shellescape(expand("<cword>"))')
