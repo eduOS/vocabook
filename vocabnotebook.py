@@ -34,6 +34,9 @@ def bwrite(s):
     else:
         b.append(s)
 
+def dump_to_Git():
+    # TODO: if the entry is a passage, then dump it to Git as a repo
+
 def dump_to_MySQL(wd):
     " extract the sentence the cursor is in"
     wordbook = {
