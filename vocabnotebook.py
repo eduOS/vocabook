@@ -36,7 +36,7 @@ def bwrite(s):
 
 def dump_to_MySQL(wd):
     " extract the sentence the cursor is in"
-    
+
     vim.command("let @b='Sentence'")
     for i, j in enumerate(wn.synsets(wd)):
         w_name = j.name()
@@ -78,6 +78,7 @@ def clear_entries():
     vim.command('{j"ey}ggdG"ep')
     vocab_one_entry
     vim.command("let g:vocab_one_entry = 1")
+    print("press s to dump the entry to mysql")
 
 def show_in_buffer(wd):
     vim.command('windo if expand("%")=="d-tmp" |q!|endif')
