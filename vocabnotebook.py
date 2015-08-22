@@ -73,6 +73,11 @@ def dump_to_MySQL(wd):
         print excerpts,sentences,tags
         con.commit()
 
+def clear_entries():
+    "clear all entries except the one under the cursor"
+    vim.command('{j"ey}ggdG"ep')
+    vocab_one_entry
+    vim.command("let g:vocab_one_entry = 1")
 
 def show_in_buffer(wd):
     vim.command('windo if expand("%")=="d-tmp" |q!|endif')
@@ -98,11 +103,14 @@ def show_in_buffer(wd):
         bwrite("Sentences: "+" ".join(rows))
         bwrite('\n')
     vim.command("normal gg")
+    vim.command("let g:vocab_one_entry = 2")
     # delete all words except that one the cursor is in
-    vim.command(""":execute 'nnoremap <buffer> c {j"ey}ggdG"ep'""")
+    vim.command(""":execute 'nnoremap <buffer> c :Python vocabnotebook.clear_entries()'""")
     # before saving I should clear other entries, making sure only one is left
     # need a if loop to ensure only one entry is left
-    vim.command(":execute 'nnoremap <buffer> s :Python vocabnotebook.dump_to_MySQL(\"" + wd + "\")<cr>'")
+    if vim.eval("g:vocab_one_entry") == "1":
+        vim.command(":execute 'nnoremap <buffer> s :Python vocabnotebook.dump_to_MySQL(\"" + wd + "\")<cr>'")
+    # TODO multientry dump
 
 def main():
     wd = vim.eval('shellescape(expand("<cword>"))')

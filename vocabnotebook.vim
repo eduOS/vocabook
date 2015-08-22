@@ -1,3 +1,8 @@
+if !exists("g:vocab_one_entry")
+  let g:vocab_one_entry = 0
+  "0 stands for none entry, 1 for one entry, 2 for more than one entries
+endif
+
 if has('python')
     command! -nargs=1 Python python <args>
 elseif has('python3')
