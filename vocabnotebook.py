@@ -124,19 +124,21 @@ def load_from_wordnet(wd):
         #bwrite('# Hypernym: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
         bwrite('\n')
 
+def extract_dump():
+    dump_to_DB(extract_entry())
 
 def show_the_entry():
     "clear all entries except the one under the cursor"
     vim.command('"eddggdG')
     vim.command("let g:win_level = 2")
     vim.command("setlocal modifiable")
-    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.dump_to_DB("+extract_entry()+")<CR>")
+    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.extract_dump()<CR>")
     target_word = vim.eval("@e").split()[1]
     definition = vim.eval("@e").split()[2]
     load_from_db(target_word, definition)
     vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
     
-    print("press :w to dump the entry to mysql")
+    print(":w to dump the entry to mysql")
 
 def show_entries(wd):
     for i,j in enumerate(wn.synsets(wd)):
@@ -151,7 +153,6 @@ def show_entries(wd):
 
 def main():
     vim.command("call <SID>Init()") 
-    print('press p to paste the sentence containing the word to one of the excerpt; press c to clear all other entries')
     wd = vim.eval('t:csword')
     wd = wd.replace("'",'')
     show_entries(wd)
