@@ -1,6 +1,11 @@
-if !exists("g:vocab_one_entry")
-  let g:vocab_one_entry = 0
-  "0 stands for none entry, 1 for one entry, 2 for more than one entries
+if !exists("g:word_is_in_db")
+  let g:word_is_in_db = 0
+  "0 stands for not in database, 1 for in database
+endif
+
+if !exists("g:win_level")
+  let g:win_level = 0
+  "0 stands for having not been shown, 1 for entry list, 2 for entry detail
 endif
 
 if has('python')

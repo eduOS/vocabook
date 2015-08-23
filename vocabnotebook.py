@@ -19,9 +19,9 @@ if not cur.execute("show tables like 'notebook'"):
                 sentences TEXT) ENGINE=InnoDB""")
 
 if not cur.execute("show tables like 'tag'"):
-    cur.execute("""CREATE TABLE tag(
+    cur.execute("""CREATE TABLE tags(
                 word_id SMALLINT,
-                tags VARCHAR(800)) ENGINE=InnoDB""")
+                tag VARCHAR(800)) ENGINE=InnoDB""")
 
 def bwrite(s):
     b = vim.current.buffer
@@ -94,11 +94,38 @@ def dump_to_MySQL(wd):
     con.commit()
     vim.command("setlocal nomodified")
 
-def clear_entries():
+def load_from_db(wd, df):
+    bwrite("Word: "+wd)
+    bwrite("Definition: "+df)
+    sql = 'select excerpts, sentences from notebook where word=' + wd
+    cur.execute(sql)
+    word_row = cur.fetchall()
+    if len(word_row)==1:
+        vim.command("let g:word_is_in_db = 1")
+        sql = 'select tag from tags where word = ' + wd
+        cur.execute(sql)
+        tag_row = cur.fetchall()
+        if len(tag_row)>0:
+            tags = ", ".join(rows)
+            bwrite("Tags: "+tags)
+        bwrite("Excerpts: "+word_row[0]+)
+        bwrite("Sentences: "+word_row[1])
+    elif len(row)==0: 
+        bwrite("# No match from database. Do it for yourself by entering t for Tags, s for sentences")
+        vim.command("let g:word_is_in_db = 0")
+
+def load_from_wordnet(wd):
+    'for details as comments'
+
+def show_the_entry():
     "clear all entries except the one under the cursor"
-    vim.command('{j"ey}ggdG"ep')
-    vocab_one_entry
-    vim.command("let g:vocab_one_entry = 1")
+    vim.command('"eyyggdG')
+    target_word = vim.eval("@e").split()[1]
+    definition = vim.eval("@e").split()[2]
+    load_from_db(target_word, definition)
+    load_from_wordnet(target_word)
+
+    vim.command("let g:win_level = 1")
     # TODO call a function to show details, including trigering for hyponymy and hypernym etc.
     print("press s to dump the entry to mysql")
 
@@ -109,12 +136,9 @@ def show_in_buffer(wd):
     bwrite('<---press p to paste the sentence containing the word to one of the excerpt; press c to clear all other entries--->\n')
     for i,j in enumerate(wn.synsets(wd)):
         w_name = str(j.name())
-        bwrite(str(i) + ". " + w_name + " Definition: " + str(j.definition()))
+        bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
         sql = """select tags from tag where word_id in (select id from notebook where word=%s)"""
         cur.execute(sql,(w_name))
-        rows = cur.fetchall()
-        if rows is not None:
-            tags = ",".join(rows)
             bwrite("Tags: "+tags)
         sql = """select excerpts from notebook where word=%s"""
         cur.execute(sql,(w_name))
@@ -128,7 +152,7 @@ def show_in_buffer(wd):
     vim.command("normal gg")
     vim.command("let g:vocab_one_entry = 2")
     # delete all words except that one the cursor is in
-    vim.command(""":execute 'nnoremap <buffer> c :Python vocabnotebook.clear_entries()'""")
+    vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.show_the_entry()'""")
     # before saving I should clear other entries, making sure only one is left
     # need a if loop to ensure only one entry is left
     if vim.eval("g:vocab_one_entry") == "1":
