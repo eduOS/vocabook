@@ -44,9 +44,13 @@ def dump_to_MySQL(wd):
             # build vocabulary: category(?), note(get, keep the passage), collocation(?), mnemonics(?), practice(sentences), area(highlight word based on passage when reviewing, ), observation(comment every line), spaced repitition(passage review)
             # original word, synset, tags, excerpts, example sentences, 
             # if for essay tasks: comment for each line, comment for the whole passage, dump in file as a repo, auto commit
-            'word' : '',
+            'original' : '', # phrase, collocation, epecial usage
+            'synset' : '', # word in wordnet, produced by nltk
             'definition' : '',
+            'mnemonic' : '',
             'tags' : '',
+            'sentences' : '',
+            'comment' : '', # for retrieving and mnemonics and practice
             }
     for line in vim.current.buffer:
 
@@ -91,6 +95,7 @@ def clear_entries():
     vim.command('{j"ey}ggdG"ep')
     vocab_one_entry
     vim.command("let g:vocab_one_entry = 1")
+    # TODO call a function to show details, including trigering for hyponymy and hypernym etc.
     print("press s to dump the entry to mysql")
 
 def show_in_buffer(wd):
