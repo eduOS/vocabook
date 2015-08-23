@@ -112,6 +112,9 @@ def load_from_db(wd, df):
         bwrite("Excerpts: "+word_row[0]+vim.eval("t:cssentence"))
         bwrite("Sentences: "+word_row[1])
     elif len(word_row)==0: 
+        bwrite("Tags: ")
+        bwrite("Excerpts: ")
+        bwrite("Sentences: ")
         bwrite("# No match from database. Do it for yourself by entering t for Tags, s for sentences")
         vim.command("let g:word_is_in_db = 0")
 
