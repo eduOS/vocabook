@@ -20,10 +20,11 @@ if not cur.execute("show tables like 'notebook'"):
                 excerpts TEXT,
                 sentences TEXT) ENGINE=InnoDB""")
 
-if not cur.execute("show tables like 'tag'"):
+if not cur.execute("show tables like 'tags'"):
     cur.execute("""CREATE TABLE tags(
-                word_id SMALLINT,
-                tag VARCHAR(800)) ENGINE=InnoDB""")
+                id SMALLINT,
+                word VARCHAR(50)
+                tag VARCHAR(80)) ENGINE=InnoDB""")
 
 def bwrite(s):
     b = vim.current.buffer
@@ -40,31 +41,22 @@ def dump_to_Git():
     "this is the core function"
     # TODO: if the entry is a passage, then dump it to Git as a repo
 
-def update_to_DB(wb):
-    sql = "SELECT id FROM notebook WHERE word=%s"
-    cur.execute(sql,(w_name))
-    wd_id = cur.fetchone()
+def dump_to_DB(wb):
+    # for the normal
+    if vim.eval("g:word_is_in_db") == "1":
+        sql = "UPDATE notebook SET excerpts=%s, sentences=%s WHERE word=%s"
+        cur.execute(sql,(wb['definition'], wb['excerpts'], wb['sentences'], wb['word']))
+        sql = "DELETE FROM tags WHERE word=%s"
+        cur.execute(sql,(wb['word']))
+    else:
+        sql = "INSERT INTO notebook VALUES(%s,%s,%s)"
+        cur.execute(sql,(wb['word'], wb['excerpts'], wb['sentences']))
 
-    if wd_id and (excerpts or sentences):
-        sql = "UPDATE notebook SET excerpts=%s, sentences=%s"
-        cur.execute(sql,(excerpts,sentences))
-    else if not wd_id and (excerpts or sentences)
-        sql = "insert into notebook values (%s,%s)"
-        cur.execute(sql,(excerpts,sentences))
+    sql = "INSERT INTO tag (word,tag) VALUES(%s,%s)"
+    for tag in wb['tags']:
+        cur.execute(sql,(wb['word'],tag))
 
-    if wd_id:
-        sql = "DELETE FROM tag WHERE word_id=%s"
-        cur.execute(sql,(wd_id))
-
-    if tags:
-        sql = "INSERT INTO tag (word_id,tags) VALUES(%s,%s)"
-        for tag in tags:
-            cur.execute(sql,(wd_id,tag))
-    print excerpts,sentences,tags
     con.commit()
-    bwrite(SHOW_SAVED_MODE)
-
-def dump_to_DB(wd):
     bwrite(SHOW_SAVED_MODE)
 
 def extract_entry():
@@ -77,6 +69,9 @@ def extract_entry():
             'sentences' : '',
             }
     for line in vim.current.buffer:
+        if line == SHOW_SAVED_MODE or re.match("^#", line) or ALERTS in line:
+            continue
+
         word = line.split("Word:")
         if len(word) > 1:
             wordbook['word'] = word[1].strip()
@@ -95,12 +90,9 @@ def extract_entry():
         if len(sentences) > 1:
             wordbook['sentences'] = sentences[1].strip()
             continue
-
-        if line == SHOW_SAVED_MODE or re.match("^#", line) or ALERTS in line:
-            continue
         
     vim.command("setlocal nomodified")
-
+    return wordbook
 
 def load_from_db(wd, df):
     bwrite("Word: "+wd)
@@ -128,10 +120,10 @@ def load_from_wordnet(wd):
 
 def show_the_entry():
     "clear all entries except the one under the cursor"
-    vim.command('"eddggdG"eP')
+    vim.command('"eddggdG')
     vim.command("let g:win_level = 2")
-    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.dump_to_DB()")
     vim.command("setlocal modifiable")
+    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.dump_to_DB("+extract_entry()+")")
     target_word = vim.eval("@e").split()[1]
     definition = vim.eval("@e").split()[2]
     load_from_db(target_word, definition)
