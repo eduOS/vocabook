@@ -108,7 +108,7 @@ def load_from_db(wd, df):
         if len(tag_row)>0:
             tags = ", ".join(rows)
             bwrite("Tags: "+tags)
-        bwrite("Excerpts: "+word_row[0]+)
+        bwrite("Excerpts: "+word_row[0]+vim.eval("b:cssentence"))
         bwrite("Sentences: "+word_row[1])
     elif len(row)==0: 
         bwrite("# No match from database. Do it for yourself by entering t for Tags, s for sentences")
