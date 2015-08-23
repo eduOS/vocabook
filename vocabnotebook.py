@@ -40,17 +40,11 @@ def dump_to_Git():
 def dump_to_MySQL(wd):
     " extract the sentence the cursor is in"
     wordbook = {
-            # what kind of data do I need?
-            # build vocabulary: category(?), note(get, keep the passage), collocation(?), mnemonics(?), practice(sentences), area(highlight word based on passage when reviewing, ), observation(comment every line), spaced repitition(passage review)
-            # original word, synset, tags, excerpts, example sentences, 
-            # if for essay tasks: comment for each line, comment for the whole passage, dump in file as a repo, auto commit
-            'original' : '', # phrase, collocation, epecial usage
             'synset' : '', # word in wordnet, produced by nltk
             'definition' : '',
-            'mnemonic' : '',
             'tags' : '',
+            'excerpts' : '',
             'sentences' : '',
-            'comment' : '', # for retrieving and mnemonics and practice
             }
     for line in vim.current.buffer:
 
