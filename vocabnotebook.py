@@ -38,51 +38,61 @@ def dump_to_Git():
     # TODO: if the entry is a passage, then dump it to Git as a repo
 
 def dump_to_MySQL(wd):
-    " extract the sentence the cursor is in"
+    " extract the sentence where the cursor is in"
     wordbook = {
-            'synset' : '', # word in wordnet, produced by nltk
+            'word' : '', # word in wordnet, produced by nltk
             'definition' : '',
-            'tags' : '',
+            'tags' : [],
             'excerpts' : '',
             'sentences' : '',
             }
     for line in vim.current.buffer:
+        word = line.split("## Word:")
+        if len(word) > 1:
+            wordbook['word'] = word[1].strip()
+            continue
+        tags = line.split("## Tags:")
+        if len(tags) > 1:
+            wordbook['tags'] = tags[1].lstrip().split(', ')
+            # remove empty entries
+            wordbook['tags'] = filter(bool, wordbook['tags'])
+            continue
+        excerpts = line.split('## Excerpts:')
+        if len(excerpts) > 1:
+            wordbook['excerpts'] = excerpts[1].strip()
+            continue
 
-    vim.command("let @b='Sentence'")
-    for i, j in enumerate(wn.synsets(wd)):
-        w_name = j.name()
-        vim.command("let @a='%s'"% w_name)
-        vim.command(""":silent :execute '/' . @a . '/+,/^' . @b . '/ s/^Tags:\_s*\(.*\)\_s*Excerpts:\_s*\(.*\)\_s*Sentences:\_s*\(.*\)\_s/\=setreg("d",submatch(1)) . setreg("e",submatch(2)) . setreg("f",submatch(3))/n'""")
-        tags = list(set(vim.eval('@d').split(',')))
-        excerpts = vim.eval('@e')
-        sentences = vim.eval('@f')
+        if line == SHOW_SAVED_MODE or ALERTS in line:
+            continue
+        
 
-        sql = "SELECT id FROM notebook WHERE word=%s"
-        cur.execute(sql,(w_name))
-        wd_id = cur.fetchone()
+    sql = "SELECT id FROM notebook WHERE word=%s"
+    cur.execute(sql,(w_name))
+    wd_id = cur.fetchone()
 
-        if wd_id and (excerpts or sentences):
-            sql = "UPDATE notebook SET excerpts=%s, sentences=%s"
-            cur.execute(sql,(excerpts,sentences))
-        else if not wd_id and (excerpts or sentences)
-            sql = "insert into notebook values (%s,%s)"
-            cur.execute(sql,(excerpts,sentences))
+    if wd_id and (excerpts or sentences):
+        sql = "UPDATE notebook SET excerpts=%s, sentences=%s"
+        cur.execute(sql,(excerpts,sentences))
+    else if not wd_id and (excerpts or sentences)
+        sql = "insert into notebook values (%s,%s)"
+        cur.execute(sql,(excerpts,sentences))
 
-        # row in db and filled
-        # row in db and unfilled
-        # row not in db and filled
-        # row not in db and unfilled
+    # row in db and filled
+    # row in db and unfilled
+    # row not in db and filled
+    # row not in db and unfilled
 
-        if wd_id:
-            sql = "DELETE FROM tag WHERE word_id=%s"
-            cur.execute(sql,(wd_id))
+    if wd_id:
+        sql = "DELETE FROM tag WHERE word_id=%s"
+        cur.execute(sql,(wd_id))
 
-        if tags:
-            sql = "INSERT INTO tag (word_id,tags) VALUES(%s,%s)"
-            for tag in tags:
-                cur.execute(sql,(wd_id,tag))
-        print excerpts,sentences,tags
-        con.commit()
+    if tags:
+        sql = "INSERT INTO tag (word_id,tags) VALUES(%s,%s)"
+        for tag in tags:
+            cur.execute(sql,(wd_id,tag))
+    print excerpts,sentences,tags
+    con.commit()
+    vim.command("setlocal nomodified")
 
 def clear_entries():
     "clear all entries except the one under the cursor"
@@ -122,7 +132,8 @@ def show_in_buffer(wd):
     # before saving I should clear other entries, making sure only one is left
     # need a if loop to ensure only one entry is left
     if vim.eval("g:vocab_one_entry") == "1":
-        vim.command(":execute 'nnoremap <buffer> s :Python vocabnotebook.dump_to_MySQL(\"" + wd + "\")<cr>'")
+        #vim.command(":execute 'nnoremap <buffer> s :Python vocabnotebook.dump_to_MySQL(\"" + wd + "\")<cr>'")
+        vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.dump_to_MySQL()")
     # TODO multientry dump
 
 def main():
