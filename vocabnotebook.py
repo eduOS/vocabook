@@ -129,11 +129,11 @@ def show_the_entry():
     vim.command('"eddggdG')
     vim.command("let g:win_level = 2")
     vim.command("setlocal modifiable")
-    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.dump_to_DB("+extract_entry()+")")
+    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.dump_to_DB("+extract_entry()+")<CR>")
     target_word = vim.eval("@e").split()[1]
     definition = vim.eval("@e").split()[2]
     load_from_db(target_word, definition)
-    vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")'")
+    vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
     
     print("press :w to dump the entry to mysql")
 
@@ -142,7 +142,7 @@ def show_entries(wd):
         w_name = str(j.name())
         bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
     # delete all words except that one the cursor is in
-    vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.show_the_entry()'""")
+    vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.show_the_entry()<CR>'""")
     # before saving I should clear other entries, making sure only one is left
     # need a if loop to ensure only one entry is left
     # TODO multientry dump and multitimes dump
