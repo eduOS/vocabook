@@ -111,7 +111,7 @@ def load_from_db(wd, df):
             bwrite("Tags: "+tags)
         bwrite("Excerpts: "+word_row[0]+vim.eval("t:cssentence"))
         bwrite("Sentences: "+word_row[1])
-    elif len(row)==0: 
+    elif len(word_row)==0: 
         bwrite("# No match from database. Do it for yourself by entering t for Tags, s for sentences")
         vim.command("let g:word_is_in_db = 0")
 
@@ -129,12 +129,13 @@ def extract_dump():
 
 def show_the_entry():
     "clear all entries except the one under the cursor"
-    vim.command('"eddggdG')
-    vim.command("let g:win_level = 2")
     vim.command("setlocal modifiable")
+    vim.command('"edd')
+    vim.command('normal! ggdG')
+    vim.command("let g:win_level = 2")
     vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.extract_dump()<CR>")
-    target_word = vim.eval("@e").split()[1]
-    definition = vim.eval("@e").split()[2]
+    target_word = vim.eval("@e").split()[1].replace("'",'')
+    definition = ' '.join(vim.eval("@e").split()[2:])
     load_from_db(target_word, definition)
     vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
     
