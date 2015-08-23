@@ -108,7 +108,7 @@ def load_from_db(wd, df):
         if len(tag_row)>0:
             tags = ", ".join(rows)
             bwrite("Tags: "+tags)
-        bwrite("Excerpts: "+word_row[0]+vim.eval("b:cssentence"))
+        bwrite("Excerpts: "+word_row[0]+vim.eval("t:cssentence"))
         bwrite("Sentences: "+word_row[1])
     elif len(row)==0: 
         bwrite("# No match from database. Do it for yourself by entering t for Tags, s for sentences")
@@ -150,9 +150,9 @@ def show_entries(wd):
 def main():
     vim.command("call <SID>Init()") 
     print('<---press p to paste the sentence containing the word to one of the excerpt; press c to clear all other entries--->\n')
-    wd = vim.eval('b:csword')
+    wd = vim.eval('t:csword')
     wd = wd.replace("'",'')
-    vim.command("let b:csword = "+wd)
+    vim.command("let t:csword = "+wd)
     show_entries(wd)
 
 def closedb():

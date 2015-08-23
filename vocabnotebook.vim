@@ -39,9 +39,9 @@ autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
 function! s:Init()
-    let b:csword = shellescape(expand("<cword>"))
+    let t:csword = shellescape(expand("<cword>"))
     normal! ("ayas
-    let b:cssentence =substitute(@a,'\n',' ','g')
+    let t:cssentence =substitute(@a,'\n',' ','g')
     windo if expand("%")=="d-tmp" |q!|endif
     10sp d-tmp
     setlocal nomodifiable
