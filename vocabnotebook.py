@@ -146,6 +146,7 @@ def show_entries(wd):
     # before saving I should clear other entries, making sure only one is left
     # need a if loop to ensure only one entry is left
     # TODO multientry dump and multitimes dump
+    vim.command("setlocal nomodifiable")
 
 def main():
     vim.command("call <SID>Init()") 
