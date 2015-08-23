@@ -23,7 +23,7 @@ if not cur.execute("show tables like 'notebook'"):
 if not cur.execute("show tables like 'tags'"):
     cur.execute("""CREATE TABLE tags(
                 id SMALLINT,
-                word VARCHAR(50)
+                word VARCHAR(50),
                 tag VARCHAR(80)) ENGINE=InnoDB""")
 
 def bwrite(s):
