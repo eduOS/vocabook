@@ -50,7 +50,7 @@ def dump_to_DB(wb):
         sql = "DELETE FROM tags WHERE word=%s"
         cur.execute(sql,(wb['word']))
     else:
-        sql = "INSERT INTO notebook VALUES(%s,%s,%s)"
+        sql = "INSERT INTO notebook (word, excerpts, sentences) VALUES(%s,%s,%s)"
         cur.execute(sql,(wb['word'], wb['excerpts'], wb['sentences']))
 
     sql = "INSERT INTO tag (word,tag) VALUES(%s,%s)"
