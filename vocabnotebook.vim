@@ -33,8 +33,20 @@ EOF
 
 "nnoremap <leader>v :set operatorfunc=<SID>VocabNoteBook<cr>g@
 "vnoremap <leader>v :<c-u>call <SID>VocabNoteBook(visualmode())<cr>
+"nnoremap <leader>v call <SID>Init()
 nnoremap <leader>v :Python vocabnotebook.main()<cr>
 autocmd VimLeave * call <SID>CloseDB()
+endfunction
+
+function! s:Init()
+    let b:csword = shellescape(expand("<cword>"))
+    normal! ("ayas
+    let b:cssentence =substitute(@a,'\n',' ','g')
+    windo if expand("%")=="d-tmp" |q!|endif
+    10sp d-tmp
+    setlocal nomodifiable
+    setlocal buftype=nofile bufhidden=delete noswapfile
+    let g:win_level = 1
 endfunction
 
 function! s:CloseDB()
