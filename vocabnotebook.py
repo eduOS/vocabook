@@ -117,6 +117,12 @@ def load_from_db(wd, df):
 def load_from_wordnet(wd):
     'for details as comments'
     # TODO call a function to show details, including trigering for hyponymy and hypernym etc.
+    for i,j in enumerate(wn.synsets(wd)):
+        bwrite('# Lemmas: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
+        #bwrite('# Hyponymy: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
+        #bwrite('# Hypernym: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
+        bwrite('\n')
+
 
 def show_the_entry():
     "clear all entries except the one under the cursor"
@@ -127,7 +133,8 @@ def show_the_entry():
     target_word = vim.eval("@e").split()[1]
     definition = vim.eval("@e").split()[2]
     load_from_db(target_word, definition)
-    load_from_wordnet(target_word)
+    vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")'")
+    
     print("press :w to dump the entry to mysql")
 
 def show_entries(wd):
