@@ -5,6 +5,7 @@ import argparse
 from nltk.corpus import wordnet as wn
 
 SHOW_SAVED_MODE = '# Entry Saved'
+ALERTS = 'WARNING'
 
 con = mdb.connect('localhost','root',"104064")
 cur = con.cursor()
