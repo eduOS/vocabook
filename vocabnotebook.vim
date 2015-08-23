@@ -44,7 +44,7 @@ function! s:Init()
     let t:cssentence =substitute(@a,'\n',' ','g')
     windo if expand("%")=="d-tmp" |q!|endif
     10sp d-tmp
-    setlocal buftype=nofile bufhidden=delete noswapfile
+    setlocal bufhidden=delete noswapfile
     let g:win_level = 1
 endfunction
 
