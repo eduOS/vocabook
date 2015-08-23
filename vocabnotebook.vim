@@ -45,6 +45,7 @@ function! s:Init()
     windo if expand("%")=="d-tmp" |q!|endif
     10sp d-tmp
     setlocal bufhidden=delete noswapfile
+    nnoremap <buffer> <silent> q :q!<CR>
     let g:win_level = 1
 endfunction
 

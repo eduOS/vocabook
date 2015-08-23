@@ -53,7 +53,7 @@ def dump_to_DB(wb):
         sql = "INSERT INTO notebook (word, excerpts, sentences) VALUES(%s,%s,%s)"
         cur.execute(sql,(wb['word'], wb['excerpts'], wb['sentences']))
 
-    sql = "INSERT INTO tag (word,tag) VALUES(%s,%s)"
+    sql = "INSERT INTO tags (word,tag) VALUES(%s,%s)"
     for tag in wb['tags']:
         cur.execute(sql,(wb['word'],tag))
 
@@ -103,8 +103,8 @@ def load_from_db(wd, df):
     word_row = cur.fetchall()
     if len(word_row)==1:
         vim.command("let g:word_is_in_db = 1")
-        sql = 'select tag from tags where word = ' + wd
-        cur.execute(sql)
+        sql = 'select tag from tags where word = %s'
+        cur.execute(sql,(wd))
         tag_row = cur.fetchall()
         if len(tag_row)>0:
             tags = ", ".join(rows)
