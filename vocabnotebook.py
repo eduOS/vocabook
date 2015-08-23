@@ -10,9 +10,9 @@ ALERTS = 'WARNING'
 con = mdb.connect('localhost','root',"104064")
 cur = con.cursor()
 
-if not cur.execute("show databases like 'VocabNB'"):
-    cur.execute("CREATE DATABASE VocabNB")
-cur.execute("use VocabNB")
+if not cur.execute("show databases like 'VocabNBt1'"):
+    cur.execute("CREATE DATABASE VocabNBt1")
+cur.execute("use VocabNBt1")
 
 if not cur.execute("show tables like 'notebook'"):
     cur.execute("""CREATE TABLE notebook(
@@ -98,8 +98,8 @@ def extract_entry():
 def load_from_db(wd, df):
     bwrite("Word: "+wd)
     bwrite("Definition: "+df)
-    sql = 'select excerpts, sentences from notebook where word=' + wd
-    cur.execute(sql)
+    sql = 'select excerpts, sentences from notebook where word=%s'
+    cur.execute(sql,(wd))
     word_row = cur.fetchall()
     if len(word_row)==1:
         vim.command("let g:word_is_in_db = 1")
