@@ -149,10 +149,9 @@ def show_entries(wd):
 
 def main():
     vim.command("call <SID>Init()") 
-    print('<---press p to paste the sentence containing the word to one of the excerpt; press c to clear all other entries--->\n')
+    print('press p to paste the sentence containing the word to one of the excerpt; press c to clear all other entries')
     wd = vim.eval('t:csword')
     wd = wd.replace("'",'')
-    vim.command("let t:csword = "+wd)
     show_entries(wd)
 
 def closedb():
