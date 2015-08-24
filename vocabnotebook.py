@@ -46,7 +46,7 @@ def dump_to_DB(wb):
     # for the normal
     if vim.eval("g:word_is_in_db") == "1":
         sql = "UPDATE notebook SET excerpts=%s, sentences=%s WHERE word=%s"
-        cur.execute(sql,(wb['definition'], wb['excerpts'], wb['sentences'], wb['word']))
+        cur.execute(sql,(wb['excerpts'], wb['sentences'], wb['word']))
         sql = "DELETE FROM tags WHERE word=%s"
         cur.execute(sql,(wb['word']))
     else:
@@ -123,7 +123,7 @@ def load_from_db(wd, df):
         bwrite("Tags: ")
         bwrite("Excerpts: "+vim.eval("t:cssentence"))
         bwrite("Sentences: ")
-        bwrite("# No match from database. Do it for yourself by entering t for Tags, s for sentences")
+        bwrite("# No match from database. ")
         vim.command("let g:word_is_in_db = 0")
 
 def load_from_wordnet(wd):
@@ -133,7 +133,6 @@ def load_from_wordnet(wd):
         bwrite('# Lemmas: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
         #bwrite('# Hyponymy: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
         #bwrite('# Hypernym: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
-        bwrite('\n')
 
 def extract_dump():
     dump_to_DB(extract_entry())
