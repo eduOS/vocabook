@@ -107,7 +107,7 @@ def load_from_db(wd, df):
         cur.execute(sql,(wd))
         tag_row = cur.fetchall()
         if len(tag_row)>0:
-            tags = ", ".join(rows)
+            tags = ", ".join(tag_row)
             bwrite("Tags: "+tags)
         bwrite("Excerpts: "+word_row[0]+vim.eval("t:cssentence"))
         bwrite("Sentences: "+word_row[1])
@@ -133,12 +133,12 @@ def extract_dump():
 def show_the_entry():
     "clear all entries except the one under the cursor"
     vim.command("setlocal modifiable")
-    vim.command('"edd')
+    cur_line = vim.eval("getline(\".\")")
     vim.command('normal! ggdG')
     vim.command("let g:win_level = 2")
     vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.extract_dump()")
-    target_word = vim.eval("@e").split()[1].replace("'",'')
-    definition = ' '.join(vim.eval("@e").split()[2:])
+    target_word = cur_line.split()[1].replace("'",'')
+    definition = ' '.join(cur_line.split()[2:])
     load_from_db(target_word, definition)
     vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
     
