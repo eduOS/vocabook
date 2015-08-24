@@ -13,7 +13,7 @@ if has('python')
 elseif has('python3')
     command! -nargs=1 Python python3 <args>
 else
-    echo "vocabnotebook.vim Error: Requires Vim compiled with +python or +python3"
+    echo "vocabook.vim Error: Requires Vim compiled with +python or +python3"
     finish
 endif
 
@@ -23,18 +23,18 @@ execute "Python sys.path.append(r'" . expand("<sfile>:p:h") . "')"
 
 function s:LoadVNB()
 Python << EOF
-if 'vocabnotebook' not in sys.modules:
-    import vocabnotebook
+if 'vocabook' not in sys.modules:
+    import vocabook
 else:
     import imp
     # Reload python module to avoid errors when updating plugin
-    vocabnotebook = imp.reload(vocabnotebook)
+    vocabook = imp.reload(vocabook)
 EOF
 
 "nnoremap <leader>v :set operatorfunc=<SID>VocabNoteBook<cr>g@
 "vnoremap <leader>v :<c-u>call <SID>VocabNoteBook(visualmode())<cr>
 "nnoremap <leader>v call <SID>Init()
-nnoremap <leader>v :Python vocabnotebook.main()<cr>
+nnoremap <leader>v :Python vocabook.main()<cr>
 autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
@@ -42,25 +42,15 @@ function! s:Init()
     let t:csword = shellescape(expand("<cword>"))
     normal! ("ayas
     let t:cssentence =substitute(@a,'\n',' ','g')
-    windo if expand("%")=="d-tmp" |q!|endif
-    10sp d-tmp
+    windo if expand("%")==".vnb" |q!|endif
+    10sp .vnb
     setlocal bufhidden=delete noswapfile
-    nnoremap <buffer> <silent> q :x<CR>
-    call <SID>Highlighting()
+    nnoremap <buffer> <silent> q :q!<CR>
     let g:win_level = 1
 endfunction
 
-function! s:Highlighting()
-  hi GuideHighlight term=bold cterm=bold gui=bold ctermfg=green guifg=green
-  syn match GuideHighlight "\v^Guide: .*$"
-  hi WordHighlight term=bold cterm=bold gui=bold ctermfg=red guifg=red
-  syn match WordHighlight "\v[a-z]+\.\w{,3}\.\d{,3}"
-  hi TagHighlight term=bold cterm=bold gui=bold ctermfg=blue guifg=blue
-  syn match TagHighlight "\v^(Word|Definition|Tags|Sentences):"
-endfunction
-
 function! s:CloseDB()
-    Python vocabnotebook.closedb()
+    Python vocabook.closedb()
 endfunction
 
 autocmd VimEnter *.mkd call <SID>LoadVNB()

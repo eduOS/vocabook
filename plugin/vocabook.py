@@ -143,11 +143,11 @@ def show_the_entry():
     cur_line = vim.eval("getline(\".\")")
     vim.command('normal! ggdG')
     vim.command("let g:win_level = 2")
-    vim.command("autocmd BufWriteCmd d-tmp :Python vocabnotebook.extract_dump()")
+    vim.command("autocmd BufWriteCmd *.vnb :Python vocabook.extract_dump()")
     target_word = cur_line.split()[1].replace("'",'')
     definition = ' '.join(cur_line.split()[2:])
     load_from_db(target_word, definition)
-    vim.command(":execute 'nnoremap <buffer> <leader>d :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
+    vim.command(":execute 'nnoremap <buffer> <leader>d :Python vocabook.load_from_wordnet("+target_word+")<CR>'")
     bwrite(GUIDE_2_1)
     vim.command("setlocal nomodified")
 
@@ -156,11 +156,9 @@ def show_entries(wd):
         w_name = str(j.name())
         bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
     bwrite(GUIDE_1_1)
-    # delete all words except that one the cursor is in
-    vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.show_the_entry()<CR>'""")
-    # before saving I should clear other entries, making sure only one is left
-    # need a if loop to ensure only one entry is left
-    # TODO multientry dump and multitimes dump
+    vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabook.show_the_entry()<CR>'""")
+    # TODO multientry dump and multitimes dump using visual choosing to choose
+    # TODO show how many excerpts have been dumped with a number appending the line
     vim.command("setlocal nomodifiable")
 
 def main():
