@@ -54,11 +54,9 @@ def dump_to_DB(wb):
     else:
         sql = "INSERT INTO notebook (word, excerpts, sentences) VALUES(%s,%s,%s)"
         cur.execute(sql,(wb['word'], wb['excerpts'], wb['sentences']))
-
     sql = "INSERT INTO tags (word,tag) VALUES(%s,%s)"
     for tag in wb['tags']:
         cur.execute(sql,(wb['word'],tag))
-
     con.commit()
     vim.command("let g:word_is_in_db = 1")
     bwrite(SHOW_SAVED_MODE)
@@ -74,7 +72,7 @@ def extract_entry():
             'sentences' : '',
             }
     for line in vim.current.buffer:
-        if line == SHOW_SAVED_MODE or re.match("^#", line) or ALERTS in line:
+        if SHOW_SAVED_MODE in line or re.match("^#", line) or GUIDE_1_1 in line or GUIDE_2_1 in line:
             continue
         word = line.split("Word:")
         if len(word) > 1:
