@@ -107,10 +107,11 @@ def load_from_db(wd, df):
         cur.execute(sql,(wd))
         tag_row = cur.fetchall()
         if len(tag_row)>0:
-            tags = ", ".join(tag_row)
+            list_tags = [tag[0] for tag in tag_row]
+            tags = ", ".join(list_tags)
             bwrite("Tags: "+tags)
-        bwrite("Excerpts: "+word_row[0]+vim.eval("t:cssentence"))
-        bwrite("Sentences: "+word_row[1])
+        bwrite("Excerpts: "+word_row[0][0]+vim.eval("t:cssentence"))
+        bwrite("Sentences: "+word_row[0][1])
     elif len(word_row)==0: 
         bwrite("Tags: ")
         bwrite("Excerpts: "+vim.eval("t:cssentence"))
