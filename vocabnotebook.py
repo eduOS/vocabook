@@ -110,7 +110,14 @@ def load_from_db(wd, df):
             list_tags = [tag[0] for tag in tag_row]
             tags = ", ".join(list_tags)
             bwrite("Tags: "+tags)
-        bwrite("Excerpts: "+word_row[0][0]+vim.eval("t:cssentence"))
+        db_sen = word_row[0][0] 
+        lc_sen = vim.eval("t:cssentence").strip()
+#        sdiff = difflib.SequenceMatcher(None, lc_sen, db_sen).ratio()
+        if lc_sen in db_sen:
+            excerpt = db_sen
+        else:
+            excerpt = db_sen + ' ' + lc_sen
+        bwrite("Excerpts: "+excerpt)
         bwrite("Sentences: "+word_row[0][1])
     elif len(word_row)==0: 
         bwrite("Tags: ")
