@@ -46,7 +46,17 @@ function! s:Init()
     10sp d-tmp
     setlocal bufhidden=delete noswapfile
     nnoremap <buffer> <silent> q :x<CR>
+    call <SID>Highlighting()
     let g:win_level = 1
+endfunction
+
+function! s:Highlighting()
+  hi GuideHighlight term=bold cterm=bold gui=bold ctermfg=green guifg=green
+  syn match GuideHighlight "\v^Guide: .*$"
+  hi WordHighlight term=bold cterm=bold gui=bold ctermfg=red guifg=red
+  syn match WordHighlight "\v[a-z]+\.\w{,3}\.\d{,3}"
+  hi TagHighlight term=bold cterm=bold gui=bold ctermfg=blue guifg=blue
+  syn match TagHighlight "\v^(Word|Definition|Tags|Sentences):"
 endfunction
 
 function! s:CloseDB()
