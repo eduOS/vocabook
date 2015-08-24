@@ -6,6 +6,8 @@ from nltk.corpus import wordnet as wn
 
 SHOW_SAVED_MODE = '# Entry Saved'
 ALERTS = 'WARNING'
+GUIDE_1_1 = "Guide: enter to choose"
+GUIDE_2_1 = "Guide: press :w to save or update to database; press d for detail provided by nltk; press q to exit and save if modified"
 
 con = mdb.connect('localhost','root',"104064")
 cur = con.cursor()
@@ -58,7 +60,9 @@ def dump_to_DB(wb):
         cur.execute(sql,(wb['word'],tag))
 
     con.commit()
+    vim.command("let g:word_is_in_db = 1")
     bwrite(SHOW_SAVED_MODE)
+    vim.command("setlocal nomodified")
 
 def extract_entry():
     " extract the sentence where the cursor is in"
@@ -72,7 +76,6 @@ def extract_entry():
     for line in vim.current.buffer:
         if line == SHOW_SAVED_MODE or re.match("^#", line) or ALERTS in line:
             continue
-
         word = line.split("Word:")
         if len(word) > 1:
             wordbook['word'] = word[1].strip()
@@ -91,7 +94,6 @@ def extract_entry():
         if len(sentences) > 1:
             wordbook['sentences'] = sentences[1].strip()
             continue
-        
     vim.command("setlocal nomodified")
     return wordbook
 
@@ -147,14 +149,15 @@ def show_the_entry():
     target_word = cur_line.split()[1].replace("'",'')
     definition = ' '.join(cur_line.split()[2:])
     load_from_db(target_word, definition)
-    vim.command(":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
-    
-    print(":w to dump the entry to mysql")
+    vim.command(":execute 'nnoremap <buffer> <leader>d :Python vocabnotebook.load_from_wordnet("+target_word+")<CR>'")
+    bwrite(GUIDE_2_1)
+    vim.command("setlocal nomodified")
 
 def show_entries(wd):
     for i,j in enumerate(wn.synsets(wd)):
         w_name = str(j.name())
         bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
+    bwrite(GUIDE_1_1)
     # delete all words except that one the cursor is in
     vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabnotebook.show_the_entry()<CR>'""")
     # before saving I should clear other entries, making sure only one is left
