@@ -59,6 +59,7 @@ def dump_to_DB(wb):
         cur.execute(sql,(wb['word'],tag))
     con.commit()
     vim.command("let g:word_is_in_db = 1")
+    bwrite(" ")
     bwrite(SHOW_SAVED_MODE)
     vim.command("setlocal nomodified")
 
@@ -123,6 +124,7 @@ def load_from_db(wd, df):
         bwrite("Tags: ")
         bwrite("Excerpts: "+vim.eval("t:cssentence"))
         bwrite("Sentences: ")
+        bwrite(" ")
         bwrite("# No match from database. ")
         vim.command("let g:word_is_in_db = 0")
 
@@ -162,7 +164,6 @@ def show_entries(wd):
     vim.command("setlocal nomodifiable")
 
 def main():
-    vim.command("call <SID>Init()") 
     wd = vim.eval('t:csword')
     wd = wd.replace("'",'')
     show_entries(wd)

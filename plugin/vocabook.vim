@@ -33,8 +33,7 @@ EOF
 
 "nnoremap <leader>v :set operatorfunc=<SID>VocabNoteBook<cr>g@
 "vnoremap <leader>v :<c-u>call <SID>VocabNoteBook(visualmode())<cr>
-"nnoremap <leader>v call <SID>Init()
-nnoremap <leader>v :Python vocabook.main()<cr>
+nnoremap <buffer> <leader>v :call <SID>Init()<CR>
 autocmd VimLeave * call <SID>CloseDB()
 endfunction
 
@@ -47,6 +46,7 @@ function! s:Init()
     setlocal bufhidden=delete noswapfile
     nnoremap <buffer> <silent> q :q!<CR>
     let g:win_level = 1
+    Python vocabook.main()
 endfunction
 
 function! s:CloseDB()

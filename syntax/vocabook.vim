@@ -16,7 +16,7 @@ syntax match VNBComment "\v^# ?.*$"
 highlight link VNBComment Comment
 syntax match VNBGuide "\v^Guide: .*$"
 highlight link VNBGuide Identifier
-syntax match VNBWord "\v[a-z]+\.\w{,3}\.\d{,3}"
+syntax match VNBWord "\v[a-z]+\.\w{1,3}\.\d{2,3}"
 highlight link VNBWord Underlined
 
 let b:current_syntax = "vocabook"
