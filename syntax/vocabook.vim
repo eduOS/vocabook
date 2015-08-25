@@ -2,12 +2,16 @@ if exists("b:current_syntax")
   finish
 endif
 
-syntax match VNBTag "\v^(Tags|Sentences):" nextgroup=VNBInput skipwhite
-highlight VNBTag cterm=bold ctermfg=DarkRed
-syntax match VNBInput "\v.*$" 
+syntax match VNBTag /\v^(Tags|Sentences):/ nextgroup=VNBInput skipwhite
+syntax match VNBInput /\v.*$/ contained skipwhite
+highlight link VNBTag Keyword
 highlight link VNBInput SpecialComment
+"hi def VNBTag guibg=Yellow guifg=Blue
+"hi def VNBInput guibg=Green guifg=White
+
 syntax match VNBTag1 "\v^(Word|Definition|Excerpts):" 
-highlight VNBTag1 cterm=none ctermfg=LightRed
+highlight link VNBTag1 Keyword
+
 syntax match VNBComment "\v^# ?.*$" 
 highlight link VNBComment Comment
 syntax match VNBGuide "\v^Guide: .*$"
