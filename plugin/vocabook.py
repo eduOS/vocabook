@@ -8,6 +8,7 @@ SHOW_SAVED_MODE = '# Entry Saved'
 ALERTS = 'WARNING'
 GUIDE_1_1 = "Guide: enter to choose"
 GUIDE_2_1 = "Guide: press :w to save or update to database; press d for detail provided by nltk; press q to exit and save if modified"
+UNLUCKY = '**I feel unlucky.**'
 
 con = mdb.connect('localhost','root',"104064")
 cur = con.cursor()
@@ -131,10 +132,14 @@ def load_from_db(wd, df):
 def load_from_wordnet(wd):
     'for details as comments'
     # TODO call a function to show details, including trigering for hyponymy and hypernym etc.
-    for i,j in enumerate(wn.synsets(wd)):
-        bwrite('# Lemmas: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
-        #bwrite('# Hyponymy: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
-        #bwrite('# Hypernym: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(j.name()).lemmas()]))
+    bwrite(' ')
+    bwrite('# load from wordnet')
+    bwrite('# Hyponyms: ' + ', '.join([str(word.name()) for word in wn.synset(wd).hyponyms()]))
+    bwrite('# Hypernyms: ' + ', '.join([str(word.name()) for word in wn.synset(wd).hypernyms()]))
+    bwrite('# Lemmas: ' + ', '.join([str(lemma.name()) for lemma in wn.synset(wd).lemmas()]))
+    bwrite('# Examples: ' + ', '.join([str(word) for word in wn.synset(wd).examples()]))
+    vim.command("normal G")
+    vim.command("setlocal nomodified")
 
 def extract_dump():
     dump_to_DB(extract_entry())
@@ -149,14 +154,23 @@ def show_the_entry():
     target_word = cur_line.split()[1].replace("'",'')
     definition = ' '.join(cur_line.split()[2:])
     load_from_db(target_word, definition)
-    vim.command(":execute 'nnoremap <buffer> <leader>d :Python vocabook.load_from_wordnet("+target_word+")<CR>'")
+    vim.command(""":execute 'nnoremap <buffer> <leader>d :Python vocabook.load_from_wordnet("%s")<CR>'"""% target_word)
     bwrite(GUIDE_2_1)
     vim.command("setlocal nomodified")
+
+def input_manually():
+    'if the system misses the entry then input it manually into db and nltk'
+    pass
+
+def complete_while_writing():
+    'while writing vocabook can automatically remind the writer words and sentences according to nltk and the meaning of the current sentence being writing. Information is shown in popup menu and preview window'
+    pass
 
 def show_entries(wd):
     for i,j in enumerate(wn.synsets(wd)):
         w_name = str(j.name())
         bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
+    bwrite(UNLUCKY+'  '+wd)
     bwrite(GUIDE_1_1)
     vim.command(""":execute 'nnoremap <buffer> <CR> :Python vocabook.show_the_entry()<CR>'""")
     # TODO multientry dump and multitimes dump using visual choosing to choose
