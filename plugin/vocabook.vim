@@ -1,3 +1,9 @@
+if exists("g:vocabook_loaded") || &cp
+  finish
+endif
+
+let g:vocabook_loaded = 1
+
 if !exists("g:word_is_in_db")
   let g:word_is_in_db = 0
   "0 stands for not in database, 1 for in database
