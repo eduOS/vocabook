@@ -79,7 +79,7 @@ def dump_to_DB(wb):
     con = connectDB()
     cur = con.cursor()
     # for the normal
-    rst = cur.execute('select * from notebook where word = %s'% wb['word'])
+    rst = cur.execute(('select * from notebook where word = %s'), (wb['word'],))
     if rst:
         sql = "UPDATE notebook SET excerpts=%s, sentences=%s WHERE word=%s"
         cur.execute(sql,(wb['excerpts'], wb['sentences'], wb['word']))
@@ -116,7 +116,7 @@ def extract_detailed_entry():
             continue
         tags = line.split("Tags:")
         if len(tags) > 1:
-            wordbook['tags'] = tags[1].lstrip().split(', ')
+            wordbook['tags'] = tags[1].strip().split(', ')
             # remove empty entries
             wordbook['tags'] = filter(bool, wordbook['tags'])
             continue
@@ -139,7 +139,7 @@ def draw_detailed_entry(wb, buf=None):
     """
     bwrite("Word: " + wb['word'])
     bwrite("Definition: " + wb['definition'])
-    bwrite("Tags: " + wb['tags'])
+    bwrite("Tags: " + str(wb['tags']))
     bwrite("Excerpts: " + wb['excerpts'])
     bwrite("Sentences: " + wb['sentences'])
     bwrite(" ")
@@ -165,13 +165,10 @@ def load_detailed_dbentry(wb):
         if len(tag_row)>0:
             list_tags = [tag[0] for tag in tag_row]
             wb['tags'] = ", ".join(list_tags)
-        db_sen = word_row[0][0] 
-        lc_sen = vim.eval("t:cssentence").strip()
-#        sdiff = difflib.SequenceMatcher(None, lc_sen, db_sen).ratio()
-        if lc_sen in db_sen:
-            wb['excerpts'] = db_sen
-        else:
-            wb['excerpt'] = db_sen + ' ' + lc_sen
+        db_excer = word_row[0][0] 
+        db_sen = word_row[0][1] 
+        wb['excerpts'] = db_excer
+        wb['sentences'] = db_sen
         return wb
     elif len(word_row)==0: 
         return False
@@ -203,11 +200,26 @@ def init_detailed_entry():
     vim.command('normal! ggdG')
     vim.command("let g:win_level = 2")
     #vim.command("autocmd BufWriteCmd _vnb_ :python extract_dump()")
+
+    # get word and definition from the list line
     wordbook['word'] = cur_line.split()[1].replace("'",'')
-    wordbook['definition'] = ' '.join(cur_line.split()[2:])
-    if load_detailed_dbentry(wordbook):
-        wordbook = load_detailed_dbentry(wordbook)
+    wordbook['definition'] = ' '.join(cur_line.split()[2:]).split('(')[0]
+    # get tags, excerpts and sentences from db if dumped
+    dwordbook = load_detailed_dbentry(wordbook)
+    # get excerpt from text
+    lc_excer = vim.eval("t:cssentence").strip()
+    if dwordbook:
+        wordbook = dwordbook
+        db_excer = wordbook['excerpts']
+#        sdiff = difflib.SequenceMatcher(None, lc_sen, db_sen).ratio()
+        if lc_excer in db_excer:
+            wordbook['excerpts'] = db_excer
+        else:
+            wb['excerpt'] = db_excer + ' ' + lc_sen
+    else:
+        wordbook['excerpts'] = lc_excer
     draw_detailed_entry(wordbook)
+    target_word = wordbook['word']
     vim.command(""":execute 'nnoremap <buffer> <leader>d :python load_from_wordnet("%s")<CR>'"""% target_word)
     bwrite(GUIDE_2_1)
     vim.command("let g:win_level = 2")
@@ -237,10 +249,11 @@ def draw_entry_list(wd):
         w_name = str(j.name())
         wordbook = copy.copy(WORDBOOK)
         wordbook['word'] = w_name
-        if load_detailed_dbentry(wordbook):
-            wordbook = load_detailed_dbentry(wordbook)
-            sentLen = ' (' + str(sum(1 for ch in wordbook['sentences'] if ch in '!.?')) + ')'
-            tags = ' [' + wordbook['tags'] + ']'
+        dwordbook = load_detailed_dbentry(wordbook)
+        if dwordbook:
+            wordbook = dwordbook
+            sentLen = ' (' + str(sum(1 for ch in wordbook['excerpts'] if ch in '!.?')) + ')'
+            tags = ' [' + str(wordbook['tags']) + ']'
             bwrite(str(i) + ". " + w_name + " " + str(j.definition()) + sentLen + tags)
         else:
             bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
@@ -271,21 +284,18 @@ function! pyvocabook#init()
     nnoremap <buffer> <silent> q :q!<CR>
     let g:win_level = 1
     nnoremap <buffer> <CR> :call <SID>showTheEntry()<CR>
+    python pyvocaMain()
 endfunction
 
 function! s:saveEntry()
     if g:win_level == 2
         python extract_dump()
-    else:
-        echo 'error'
     endif
 endfunction
 
 function! s:showTheEntry()
     if g:win_level == 1
         python init_detailed_entry()
-    else:
-        echo 'error'
     endif
 endfunction
 

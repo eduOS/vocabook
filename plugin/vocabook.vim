@@ -23,7 +23,6 @@ endif
 function! s:showInit()
     if g:win_level == 0
         call pyvocabook#init()
-        python pyvocaMain()
     endif
 endfunction
 
