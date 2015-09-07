@@ -198,7 +198,7 @@ def init_detailed_entry():
     vim.command("setlocal modifiable")
     cur_line = vim.eval("getline(\".\")")
     vim.command('normal! ggdG')
-    vim.command("let g:win_level = 2")
+    vim.command("let t:win_level = 2")
     #vim.command("autocmd BufWriteCmd _vnb_ :python extract_dump()")
 
     # get word and definition from the list line
@@ -222,7 +222,7 @@ def init_detailed_entry():
     target_word = wordbook['word']
     vim.command(""":execute 'nnoremap <buffer> <leader>d :python load_from_wordnet("%s")<CR>'"""% target_word)
     bwrite(GUIDE_2_1)
-    vim.command("let g:win_level = 2")
+    vim.command("let t:win_level = 2")
     vim.command("setlocal nomodified")
 
 def input_manually():
@@ -264,7 +264,7 @@ def draw_entry_list(wd):
     # TODO show how many excerpts have been dumped with a number appending the line
     vim.command("setlocal nomodified")
     vim.command("setlocal nomodifiable")
-    vim.command("let g:win_level = 1")
+    vim.command("let t:win_level = 1")
 
 def pyvocaMain():
     wd = vim.eval('t:csword')
@@ -282,25 +282,25 @@ function! pyvocabook#init()
     10sp _vnb_
     setlocal bufhidden=delete noswapfile
     nnoremap <buffer> <silent> q :q!<CR>
-    let g:win_level = 1
+    let t:win_level = 1
     nnoremap <buffer> <CR> :call <SID>showTheEntry()<CR>
     python pyvocaMain()
 endfunction
 
 function! s:saveEntry()
-    if g:win_level == 2
+    if t:win_level == 2
         python extract_dump()
     endif
 endfunction
 
 function! s:showTheEntry()
-    if g:win_level == 1
+    if t:win_level == 1
         python init_detailed_entry()
     endif
 endfunction
 
 function! s:bufLeave()
-    let g:win_level = 0
+    let t:win_level = 0
 endfunction
 
 autocmd BufWriteCmd _vnb_ call s:saveEntry()

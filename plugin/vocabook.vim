@@ -10,8 +10,8 @@ if !has('python')
     finish
 endif
 
-if !exists("g:win_level")
-  let g:win_level = 0
+if !exists("t:win_level")
+  let t:win_level = 0
   "0 stands for having not been shown, 1 for entry list, 2 for entry detail
 endif
 
@@ -21,7 +21,7 @@ if !exists("g:db_loaded")
 endif
 
 function! s:showInit()
-    if g:win_level == 0
+    if t:win_level == 0
         call pyvocabook#init()
     endif
 endfunction
