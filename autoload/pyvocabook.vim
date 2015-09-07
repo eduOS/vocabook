@@ -139,7 +139,7 @@ def draw_detailed_entry(wb, buf=None):
     """
     bwrite("Word: " + wb['word'])
     bwrite("Definition: " + wb['definition'])
-    bwrite("Tags: " + str(wb['tags']))
+    bwrite("Tags: " + ', '.join(wb['tags']))
     bwrite("Excerpts: " + wb['excerpts'])
     bwrite("Sentences: " + wb['sentences'])
     bwrite(" ")
