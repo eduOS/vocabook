@@ -139,37 +139,38 @@ def draw_detailed_entry(wb, buf=None):
     """
     bwrite("Word: " + wb['word'])
     bwrite("Definition: " + wb['definition'])
-    bwrite("Tags: " + ', '.join(wb['tags']))
+    bwrite("Tags: " + str(wb['tags']))
     bwrite("Excerpts: " + wb['excerpts'])
     bwrite("Sentences: " + wb['sentences'])
     bwrite(" ")
     vim.command("normal 2jA ")
     vim.command("startinsert")
     
-def load_detailed_dbentry(wb):
+def load_detailed_dbentry(word):
     """
     load detailed entry from database
     receive a wordbook dictionary
     adjust the dictionary
     return a wordbook dictionary
     """
+    wordbook = copy.copy(WORDBOOK)
+    wordbook['word'] = word
+
     con = connectDB()
     cur = con.cursor()
     sql = 'select excerpts, sentences from notebook where word=%s'
-    cur.execute(sql,(wb['word']))
+    cur.execute(sql,(wordbook['word']))
     word_row = cur.fetchall()
     if len(word_row)==1:
         sql = 'select tag from tags where word = %s'
-        cur.execute(sql,(wb['word']))
+        cur.execute(sql,(wordbook['word']))
         tag_row = cur.fetchall()
         if len(tag_row)>0:
             list_tags = [tag[0] for tag in tag_row]
-            wb['tags'] = ", ".join(list_tags)
-        db_excer = word_row[0][0] 
-        db_sen = word_row[0][1] 
-        wb['excerpts'] = db_excer
-        wb['sentences'] = db_sen
-        return wb
+            wordbook['tags'] = ", ".join(list_tags)
+        wordbook['excerpts'] = word_row[0][0] 
+        wordbook['sentences'] = word_row[0][1]
+        return wordbook
     elif len(word_row)==0: 
         return False
     cur.close()
@@ -205,7 +206,8 @@ def init_detailed_entry():
     wordbook['word'] = cur_line.split()[1].replace("'",'')
     wordbook['definition'] = ' '.join(cur_line.split()[2:]).split('(')[0]
     # get tags, excerpts and sentences from db if dumped
-    dwordbook = load_detailed_dbentry(wordbook)
+    dwordbook = load_detailed_dbentry(wordbook['word'])
+    print dwordbook['tags'], wordbook['tags']
     # get excerpt from text
     lc_excer = vim.eval("t:cssentence").strip()
     if dwordbook:
@@ -215,7 +217,7 @@ def init_detailed_entry():
         if lc_excer in db_excer:
             wordbook['excerpts'] = db_excer
         else:
-            wb['excerpt'] = db_excer + ' ' + lc_sen
+            wordbook['excerpts'] = db_excer + ' ' + lc_excer
     else:
         wordbook['excerpts'] = lc_excer
     draw_detailed_entry(wordbook)
@@ -249,7 +251,7 @@ def draw_entry_list(wd):
         w_name = str(j.name())
         wordbook = copy.copy(WORDBOOK)
         wordbook['word'] = w_name
-        dwordbook = load_detailed_dbentry(wordbook)
+        dwordbook = load_detailed_dbentry(wordbook['word'])
         if dwordbook:
             wordbook = dwordbook
             sentLen = ' (' + str(sum(1 for ch in wordbook['excerpts'] if ch in '!.?')) + ')'
