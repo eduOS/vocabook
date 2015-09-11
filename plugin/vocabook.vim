@@ -22,8 +22,20 @@ endif
 
 function! s:showInit()
     if t:win_level == 0
-        call pyvocabook#init()
+        call pyvocabook#initvcbw()
     endif
 endfunction
 
+function! s:listVoca(...)
+    call pyvocabook#initvclw()
+
+    if a:0 < 1
+        python showVcbList(0)
+    else
+        python showVcbList(vim.eval('a:1'))
+    endif
+
+endfunction
+
 nnoremap <buffer> <leader>v :call <SID>showInit()<CR>
+command! -nargs=* Vtag call s:listVoca(<f-args>)

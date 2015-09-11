@@ -139,7 +139,7 @@ def draw_detailed_entry(wb, buf=None):
     """
     bwrite("Word: " + wb['word'])
     bwrite("Definition: " + wb['definition'])
-    bwrite("Tags: " + str(wb['tags']))
+    bwrite("Tags: " + str(wb['tags'] or ' '))
     bwrite("Excerpts: " + wb['excerpts'])
     bwrite("Sentences: " + wb['sentences'])
     bwrite(" ")
@@ -207,7 +207,6 @@ def init_detailed_entry():
     wordbook['definition'] = ' '.join(cur_line.split()[2:]).split('(')[0]
     # get tags, excerpts and sentences from db if dumped
     dwordbook = load_detailed_dbentry(wordbook['word'])
-    print dwordbook['tags'], wordbook['tags']
     # get excerpt from text
     lc_excer = vim.eval("t:cssentence").strip()
     if dwordbook:
@@ -275,10 +274,17 @@ def pyvocaMain():
 
 EOF
 
-function! pyvocabook#init()
+function! pyvocabook#initvclw()
+    windo if expand("%")=="_vnbl_" |q!|endif
+    10sp _vnbl_
+    setlocal bufhidden=delete noswapfile
+    nnoremap <buffer> <silent> q :q!<CR>
+endfunction
+
+function! pyvocabook#initvcbw()
     let g:vocabook_pyloaded = 1
     let t:csword = shellescape(expand("<cword>"))
-    normal! ("ayas
+    normal! *``("ayasn
     let t:cssentence =substitute(@a,'\n',' ','g')
     windo if expand("%")=="_vnb_" |q!|endif
     10sp _vnb_
@@ -301,10 +307,10 @@ function! s:showTheEntry()
     endif
 endfunction
 
-function! s:bufLeave()
+function! s:bufDelete()
     let t:win_level = 0
 endfunction
 
 autocmd BufWriteCmd _vnb_ call s:saveEntry()
-autocmd BufLeave _vnb_ call s:bufLeave()
+autocmd BufDelete _vnb_ call s:bufDelete()
 
