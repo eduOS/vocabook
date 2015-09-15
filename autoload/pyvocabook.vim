@@ -170,8 +170,12 @@ def load_detailed_dbentry(word):
             wordbook['tags'] = ", ".join(list_tags)
         wordbook['excerpts'] = word_row[0][0] 
         wordbook['sentences'] = word_row[0][1]
+        cur.close()
+        closeDB(con)
         return wordbook
     elif len(word_row)==0: 
+        cur.close()
+        closeDB(con)
         return False
     cur.close()
     closeDB(con)
@@ -238,7 +242,7 @@ def complete_while_writing():
     in popup menu and preview window"""
     pass
 
-def draw_entry_list(wd):
+def draw_entry_synsets(wd):
     """
     Show entries according to the results from wordnet
     with number of excerpts and tags if any from requrying the database
@@ -270,16 +274,70 @@ def draw_entry_list(wd):
 def pyvocaMain():
     wd = vim.eval('t:csword')
     wd = wd.replace("'",'')
-    draw_entry_list(wd)
+    draw_entry_synsets(wd)
+
+def draw_search_list(wdlst,msg=None):
+    bwrite(msg)
+    for i,j in enumerate(wdlst):
+        bwrite(str(i)+'. '+j)
+    bwrite('  ')
+
+def search_by_tag(tag):
+    """
+    look up words tagged 
+    return word in the same format as list
+    supper search should be extended: synonym
+    """
+    con = connectDB()
+    cur = con.cursor()
+    sql = 'select distinct word from tags where tag like %s'
+    cur.execute(sql,('%' + tag + '%',))
+    word_row = cur.fetchall()
+    if not word_row:
+        cur.close()
+        closeDB(con)
+        return None
+    cur.close()
+    closeDB(con)
+    return [word[0] for word in word_row]
+
+def search_by_sentence(word):
+    '''
+    recieve any word
+    return the word which can be detailed
+    search by excerpts and sentences in 
+    database
+    '''
+    con = connectDB()
+    cur = con.cursor()
+    sql = 'select distinct word from notebook where excerpts like %s or sentences like %s'
+    cur.execute(sql,('%' + word + '%','%' + word + '%'))
+    word_row = cur.fetchall()
+    if not word_row:
+        cur.close()
+        closeDB(con)
+        return None
+    cur.close()
+    closeDB(con)
+    return [word[0] for word in word_row]
+
+def pyvocaSearch(word):
+    '''
+    search word from db and list items
+    press enter for showing details 
+    in _vnb_ window. list window doesn't disappear
+    if the word == 0 search the whole vocabulary
+    else seach the words relating to that one
+    '''
+    wordlist = [w for w in search_by_tag(word)]
+    msg = 'Results from tag searching'
+    draw_search_list(wordlist,msg)
+    wordlist = [w for w in search_by_sentence(word)]
+    msg = 'Results from sentence searching'
+    draw_search_list(wordlist,msg)
+    
 
 EOF
-
-function! pyvocabook#initvclw()
-    windo if expand("%")=="_vnbl_" |q!|endif
-    10sp _vnbl_
-    setlocal bufhidden=delete noswapfile
-    nnoremap <buffer> <silent> q :q!<CR>
-endfunction
 
 function! pyvocabook#initvcbw()
     let g:vocabook_pyloaded = 1
@@ -287,12 +345,20 @@ function! pyvocabook#initvcbw()
     normal! *``("ayasn
     let t:cssentence =substitute(@a,'\n',' ','g')
     windo if expand("%")=="_vnb_" |q!|endif
-    10sp _vnb_
+    15sp _vnb_
     setlocal bufhidden=delete noswapfile
     nnoremap <buffer> <silent> q :q!<CR>
     let t:win_level = 1
     nnoremap <buffer> <CR> :call <SID>showTheEntry()<CR>
     python pyvocaMain()
+endfunction
+
+function! pyvocabook#vocSearch(word)
+    windo if expand("%")=="_vnbl_" |q!|endif
+    25vsp _vnbl_
+    setlocal bufhidden=delete noswapfile
+    nnoremap <buffer> <silent> q :q!<CR>
+    python pyvocaSearch(a:word)
 endfunction
 
 function! s:saveEntry()

@@ -26,16 +26,14 @@ function! s:showInit()
     endif
 endfunction
 
-function! s:listVoca(...)
-    call pyvocabook#initvclw()
-
+function! s:searchVoc(...)
     if a:0 < 1
-        python showVcbList(0)
+        call pyvocabook#vocSearch(0)
     else
-        python showVcbList(vim.eval('a:1'))
+        call pyvocabook#vocSearch(vim.eval('a:1'))
     endif
 
 endfunction
 
 nnoremap <buffer> <leader>v :call <SID>showInit()<CR>
-command! -nargs=* Vtag call s:listVoca(<f-args>)
+command! -nargs=* Vlookup call s:searchVoc(<f-args>)
