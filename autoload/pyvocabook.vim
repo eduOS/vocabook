@@ -212,10 +212,12 @@ def init_detailed_entry():
     # get tags, excerpts and sentences from db if dumped
     dwordbook = load_detailed_dbentry(wordbook['word'])
     # get excerpt from text
-    lc_excer = vim.eval("t:cssentence").strip()
+    lc_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\(\d\)','',vim.eval("t:cssentence"))).split())
     if dwordbook:
         wordbook = dwordbook
-        db_excer = wordbook['excerpts']
+        #db_excer = wordbook['excerpts']
+        # this should be removed if all excerpts in db are modified
+        db_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\(\d\)','',wordbook['excerpts'])).split())
 #        sdiff = difflib.SequenceMatcher(None, lc_sen, db_sen).ratio()
         if lc_excer in db_excer:
             wordbook['excerpts'] = db_excer
