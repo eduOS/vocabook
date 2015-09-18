@@ -364,13 +364,17 @@ function! pyvocabook#vocSearch(word)
 endfunction
 
 function! s:saveEntry()
-    if t:win_level == 2
+    normal gg
+    let matchnum0 = search('\v^Word:', 'c', line("w$"))  
+    if matchnum0 > 0
         python extract_dump()
     endif
 endfunction
 
 function! s:showTheEntry()
-    if t:win_level == 1
+    normal 0
+    let matchnum1 = search('\v^\d{1,2}\. [a-z]*\.\w\.\d{1,3}', 'c', line("w$"))  
+    if matchnum1 > 0
         python init_detailed_entry()
     endif
 endfunction
