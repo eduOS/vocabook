@@ -71,7 +71,7 @@ def bwrite(s):
     else:
         b.append(s)
 
-def dump_to_Git():
+def dump_to_Git(text):
     "this is the core function"
     # TODO: if the entry is a passage, then dump it to Git as a repo
 
@@ -208,13 +208,14 @@ def init_detailed_entry():
 
     # get word and definition from the list line
     wordbook['word'] = cur_line.split()[1].replace("'",'')
-    wordbook['definition'] = ' '.join(cur_line.split()[2:]).split('(')[0]
+    defi = wordbook['definition'] = ' '.join(cur_line.split()[2:]).split(' (')[0]
     # get tags, excerpts and sentences from db if dumped
     dwordbook = load_detailed_dbentry(wordbook['word'])
     # get excerpt from text
     lc_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\(\d\)','',vim.eval("t:cssentence"))).split())
     if dwordbook:
         wordbook = dwordbook
+        wordbook['definition'] = defi
         #db_excer = wordbook['excerpts']
         # this should be removed if all excerpts in db are modified
         db_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\(\d\)','',wordbook['excerpts'])).split())
@@ -344,7 +345,8 @@ EOF
 function! pyvocabook#initvcbw()
     let g:vocabook_pyloaded = 1
     let t:csword = shellescape(expand("<cword>"))
-    normal! *``("ayasn
+    normal *``
+    normal! ("ayasn
     let t:cssentence =substitute(@a,'\n',' ','g')
     windo if expand("%")=="_vnb_" |q!|endif
     15sp _vnb_
