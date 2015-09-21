@@ -74,6 +74,7 @@ def bwrite(s):
 def dump_to_Git(text):
     "this is the core function"
     # TODO: if the entry is a passage, then dump it to Git as a repo
+ 
 
 def dump_to_DB(wb):
     con = connectDB()
@@ -143,7 +144,7 @@ def draw_detailed_entry(wb, buf=None):
     bwrite("Excerpts: " + wb['excerpts'])
     bwrite("Sentences: " + wb['sentences'])
     bwrite(" ")
-    vim.command("normal 2jA ")
+    vim.command("normal 2jA")
     vim.command("startinsert")
     
 def load_detailed_dbentry(word):
@@ -212,13 +213,13 @@ def init_detailed_entry():
     # get tags, excerpts and sentences from db if dumped
     dwordbook = load_detailed_dbentry(wordbook['word'])
     # get excerpt from text
-    lc_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\(\d\)','',vim.eval("t:cssentence"))).split())
+    lc_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\[\d\]','',re.sub(r'\]\(.*\)','',vim.eval("t:cssentence")))).split())
     if dwordbook:
         wordbook = dwordbook
         wordbook['definition'] = defi
         #db_excer = wordbook['excerpts']
         # this should be removed if all excerpts in db are modified
-        db_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\(\d\)','',wordbook['excerpts'])).split())
+        db_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\[\d\]','',re.sub(r'\]\(.*\)','',wordbook['excerpts']))).split())
 #        sdiff = difflib.SequenceMatcher(None, lc_sen, db_sen).ratio()
         if lc_excer in db_excer:
             wordbook['excerpts'] = db_excer
