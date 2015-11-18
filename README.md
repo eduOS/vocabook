@@ -6,7 +6,7 @@ Make sure that Python and MySQL is installed.
 NLTK is needed.
 
 # Installation   
-Copy plugin/vocabook to ~/.vim/plugin   
+Copy plugin/vocabook to ~/.vim/bundle/     
 Or add a GitHub repository entry if you are using a Plugin Manager such as Vundle:  
 ```Plugin 'eduOS/vocabook'```
 
