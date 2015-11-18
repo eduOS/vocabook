@@ -74,7 +74,6 @@ def bwrite(s):
 def dump_to_Git(text):
     "this is the core function"
     # TODO: if the entry is a passage, then dump it to Git as a repo
- 
 
 def dump_to_DB(wb):
     con = connectDB()
