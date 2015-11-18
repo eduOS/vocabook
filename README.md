@@ -1,16 +1,16 @@
+# Description     
+vocabook is a Vim plugin which provides a contextual way for building vocabulary, the very first step of writing learning. Inspired by the staged-modified-and-commited vocabulary development mechanism taught in the MOOC named Principles of Written English, I created the tool by which users can glean words effectively using techniques such as categorizing, taking notes, collocating, using mnemonics and spaced repeating and etc.     
+
+# Prerequisite   
+Making sure that MySQL is installed.   
+
 # Installation   
 Copy plugin/vocabook to ~/.vim/plugin   
 Or add a GitHub repository entry if you are using a Plugin Manager such as Vundle:  
 ```Plugin 'eduOS/vocabook'```
 
-# Prerequisite   
-Making sure that MySQL is installed.   
-
 # Configuration   
 Change the database and password to your own.   
-
-# Description     
-vocabook is a Vim plugin which provides a contextual way for building vocabulary, the very first step of writing learning. Inspired by the staged-modified-and-commited vocabulary development mechanism taught in the MOOC named Principles of Written English, I created the tool by which users can glean words effectively using techniques such as categorizing, taking notes, collocating, using mnemonics and spaced repeating and etc.     
     
 # Functions    
 0. Word extracting       
