@@ -26,6 +26,10 @@ Change the database and password to your own.
     Practice is a way of learning by doing.     
 5. Looking up for detailed information    
     As a vocabulary book in nature this plugin provides brief information that almost every dictionary can offer. Pressing ```<leader>d``` will do that.    
+
+# Screenshots
+[list](https://cloud.githubusercontent.com/assets/5717031/11235957/cbda86ca-8e10-11e5-8bc5-6c1c3698feb5.png)  
+[details](https://cloud.githubusercontent.com/assets/5717031/11236982/f70dd0d4-8e17-11e5-8ea3-66901dabe46d.png)  
     
 # Todo    
 - [ ] normal command line search by tag and anything with results categorized    
