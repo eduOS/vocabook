@@ -2,7 +2,8 @@
 vocabook is a Vim plugin which provides a contextual way for building vocabulary, the very first step of writing learning. Inspired by the staged-modified-and-committed vocabulary development mechanism taught in the MOOC named Principles of Written English, I created the tool by which users can glean words effectively using techniques such as categorizing, taking notes, collocating, using mnemonics and spaced repeating and etc.     
 
 # Prerequisite   
-Making sure that MySQL is installed.   
+Making sure that Python and MySQL is installed.   
+NLTK is needed.
 
 # Installation   
 Copy plugin/vocabook to ~/.vim/plugin   
