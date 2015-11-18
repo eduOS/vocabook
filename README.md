@@ -3,7 +3,7 @@ vocabook is a Vim plugin which provides a contextual way for building vocabulary
     
 # Functions    
 0. Word extracting       
-    Pressing the key combination <leader>V will bring the user to a new window with the word under the cursor stored in a register.    
+    Pressing the key combination \<leader>V will bring the user to a new window with the word under the cursor stored in a register.    
 1. Lemmatizing       
     Words are lemmatized such that words in different inflected forms are recorded as the same non-inflected form.      
     Different meanings for the same non-inflected word are listed for choosing, with a mark of whether the word has been collected and its tags. The user will see the main window by intuitively pressing Enter.    
@@ -14,7 +14,7 @@ vocabook is a Vim plugin which provides a contextual way for building vocabulary
 4. Sentence making     
     Practice is a way of learning by doing.     
 5. Looking up for detailed information    
-    As a vocabulary book in nature this plugin provides brief information that almost every dictionary can offer. Pressing <leader>d will do that.    
+    As a vocabulary book in nature this plugin provides brief information that almost every dictionary can offer. Pressing \<leader>d will do that.    
     
 # Todo    
 - [ ] normal command line search by tag and anything with results categorized    
