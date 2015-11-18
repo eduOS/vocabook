@@ -2,7 +2,7 @@
 vocabook is a Vim plugin which provides a contextual way for building vocabulary, the very first step of writing learning. Inspired by the staged-modified-and-commited vocabulary development mechanism taught in the MOOC named Principles of Written English, I created the tool by which users can glean words effectively using techniques such as categorizing, taking notes, collocating, using mnemonics and spaced repeating and etc.     
     
 # Functions    
-0. word extracting       
+0. Word extracting       
     Pressing the key combination <leader>V will bring the user to a new window with the word under the cursor stored in a register.    
 1. Lemmatizing       
     Words are lemmatized such that words in different inflected forms are recorded as the same non-inflected form.      
@@ -11,9 +11,9 @@ vocabook is a Vim plugin which provides a contextual way for building vocabulary
     To aid in words retrieval, words can be tagged by multiple tags. Tags can be modified later.    
 3. collecting excerpts       
     The sentence under the cursor will be copied and then added to the database. If a certain meaning of a non-inflected word is looked up the second time or later the sentence is checked if it has been in the database, if not it is added; else it is discarded.     
-4. sentence making     
+4. Sentence making     
     Practice is a way of learning by doing.     
-5. looking up for detailed information    
+5. Looking up for detailed information    
     As a vocabulary book in nature this plugin provides brief information that almost every dictionary can offer. Pressing <leader>d will do that.    
     
 # Todo    
