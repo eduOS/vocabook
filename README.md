@@ -1,7 +1,7 @@
 # Installation   
-Copy plugin/follow-my-lead.vim to ~/.vim/plugin   
+Copy plugin/vocabook to ~/.vim/plugin   
 Or add a GitHub repository entry if you are using a Plugin Manager such as Vundle:  
-```Plugin 'ktonga/vim-follow-my-lead'```
+```Plugin 'eduOS/vocabook'```
 
 # Description     
 vocabook is a Vim plugin which provides a contextual way for building vocabulary, the very first step of writing learning. Inspired by the staged-modified-and-commited vocabulary development mechanism taught in the MOOC named Principles of Written English, I created the tool by which users can glean words effectively using techniques such as categorizing, taking notes, collocating, using mnemonics and spaced repeating and etc.     
