@@ -1,7 +1,42 @@
-This is a Vim plugin for building vocabulary. I decided to create it after being inspired by a MOOC on Edx titled Principle of Written English delievered by Maggie Sokolik and all the team at College Writing 2.2x from Berkeley.
+# Description 
+vocabook is a Vim plugin which provides a contextual way for building vocabulary, the very first step of writing learning. Inspired by the staged-modified-and-commited vocabulary development mechanism taught in the MOOC named Principles of Written English, I created the tool by which users can glean words effectively using techniques such as categorizing, taking notes, collocating, using mnemonics and spaced repeating and etc. 
 
-It's now a vocabulary book the mission of which is to facilitate EFL writing during the whole writing process from prewriting to making a final copy. 
+# Functions
+0. word extracting   
+    Pressing the key combination <leader>V will bring the user to a new window with the word under the cursor stored in a register.
+1. Lemmatizing   
+    Words are lemmatized such that words in different inflected forms are recorded as the same non-inflected form.
+    Different meanings for the same non-inflected word are listed for choosing, with a mark of whether the word has been collected and its tags. The user will see the main window by intuitively pressing Enter.
+2. Tagging
+    To aid in words retrieval, words can be tagged by multiple tags. Tags can be modified later.
+3. collecting excerpts
+    The sentence under the cursor will be copied and then added to the database. If a certain meaning of a non-inflected word is looked up the second time or later the sentence is checked if it has been in the database, if not it is added; else it is discarded. 
+4. sentence making 
+    Practice is a way of learning by doing. 
+5. looking up for detailed information
+    As a vocabulary book in nature this plugin provides brief information that almost every dictionary can offer. Pressing <leader>d will do that.
 
-The plugin is triggered when a shortcut is pressed, resulting in automatically looking up all information about the word under the cursor from natural language tool kit (NLTK) and from MySQL database and openning a new window showing all information aforementioned and the sentence containing the word under the cursor. The window is editable where you can tag the word for convenience of extracting later and can also practice making sentences using the word. Tags and sentences and others are then stored back into the database. 
+# Todo
+- [ ] normal command line search by tag and anything with results categorized
+- [x] go back to the exact location after copying the sentence.
+- [ ] highlight the background of the line the cursor is in
+- [ ] optimize the tag management mathord
+- [x] auto insert after loading the second detail window
+- [ ] phrase adding and collocation adding(auto collocate) in visual mode
+- [ ] collocation recoganize in a sentence
+- [ ] collocation search
+- [ ] more detailed explanation from wordnet
+- [ ] passage reading and review writing using Git and issue: hash generate and reference
+- [x] show the number and related words on the first level window
+- [ ] autocomplete when editing by searching tags and words in sentences, then optimize the algorithm
+- [ ] review
+- [ ] backwards navigable: hackernews
+- [ ] delete word and accordingly the tags
+- [ ] youdao wordbook import
+- [ ] highlight all vocabulary dumped
+- [ ] filter text for plain, clear and whole sentence
+- [ ] modify database to record collocation manually and definition automatically
+- [ ] more example sentences extracted from open data
 
-License: MIT
+# License 
+MIT
