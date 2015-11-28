@@ -20,9 +20,9 @@ Change the database and password to your own.
     Words are lemmatized such that words in different inflected forms are recorded as the same non-inflected form.      
     Different meanings for the same non-inflected word are listed for choosing, with a mark of whether the word has been collected and its tags. The user will see the main window by intuitively pressing Enter.    
 2. Tagging      
-    To aid in words retrieval, words can be tagged by multiple tags. Tags can be modified later.    
+    To aid in words retrieval, words can be tagged by multiple tags. Tags can be modified for later.    
 3. collecting excerpts       
-    The sentence under the cursor will be copied and then added to the database. If a certain meaning of a non-inflected word is looked up the second time or later the sentence is checked if it has been in the database, if not it is added; else it is discarded.     
+    The sentence under the cursor will be copied and then added to the database. If a certain meaning of a non-inflected word is looked up the second time or later the sentence is checked if or not it has been in the database, if not it is added; else it is discarded.     
 4. Sentence making     
     Practice is a way of learning by doing.     
 5. Looking up for detailed information    
