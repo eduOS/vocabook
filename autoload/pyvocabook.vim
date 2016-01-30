@@ -12,8 +12,8 @@ from nltk.corpus import wordnet as wn
 
 SHOW_SAVED_MODE = '# Entry Saved'
 ALERTS = 'WARNING'
-GUIDE_1_1 = "Guide: enter to choose"
-GUIDE_2_1 = "Guide: press :w to save or update to database; press d for detail provided by nltk; press q to exit and save if modified"
+GUIDE_1_1 = "Guide: press enter to choose"
+GUIDE_2_1 = "Guide: press :w to save or update to database; press d for details provided by nltk; press q to exit and save if modified"
 UNLUCKY = '**I feel unlucky.**'
 
 WORDBOOK = {
