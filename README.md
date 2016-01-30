@@ -53,6 +53,8 @@ Change the database and password to your own.
 - [ ] filter text for plain, clear and whole sentence    
 - [ ] modify database to record collocation manually and definition automatically    
 - [ ] more example sentences extracted from open data    
+- [ ] sentences recommendation
+- [ ] words recommendation
     
 # License     
 MIT    
