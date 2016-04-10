@@ -251,10 +251,21 @@ def draw_entry_synsets(wd):
     with number of excerpts and tags if any from requrying the database
     Maybe need fold features
     """
-
     vim.command("setlocal modifiable")
+
+    from pywsd import disambiguate
+    lc_excer = ' '.join(re.sub(r'[\*_\[\]]','',re.sub(r'\[\d\]','',re.sub(r'\]\(.*\)','',vim.eval("t:cssentence")))).split())
+    wds = ""
+    flag = ". "
+    results = disambiguate(lc_excer)
+    for result in results:
+        if wd == result[0]:
+            wds = str(result[1].name())
     for i,j in enumerate(wn.synsets(wd)):
         w_name = str(j.name())
+        if wds == w_name:
+            print wds, w_name
+            flag = '.*'
         wordbook = copy.copy(WORDBOOK)
         wordbook['word'] = w_name
         dwordbook = load_detailed_dbentry(wordbook['word'])
@@ -262,9 +273,10 @@ def draw_entry_synsets(wd):
             wordbook = dwordbook
             sentLen = ' (' + str(sum(1 for ch in wordbook['excerpts'] if ch in '!.?')) + ')'
             tags = ' [' + str(wordbook['tags']) + ']'
-            bwrite(str(i) + ". " + w_name + " " + str(j.definition()) + sentLen + tags)
+            bwrite(str(i) + flag + w_name + " " + str(j.definition()) + sentLen + tags)
         else:
-            bwrite(str(i) + ". " + w_name + " " + str(j.definition()))
+            bwrite(str(i) + flag + w_name + " " + str(j.definition()))
+        flag = ". "
     bwrite(UNLUCKY+'  '+wd)
     bwrite(GUIDE_1_1)
     #vim.command(""":execute 'nnoremap <buffer> <CR> :python show_the_entry()<CR>'""")
@@ -358,11 +370,13 @@ function! pyvocabook#initvcbw()
 endfunction
 
 function! pyvocabook#vocSearch(word)
+    echom a:word
     windo if expand("%")=="_vnbl_" |q!|endif
     25vsp _vnbl_
     setlocal bufhidden=delete noswapfile
     nnoremap <buffer> <silent> q :q!<CR>
     python pyvocaSearch(a:word)
+    " why syntex wrong?
 endfunction
 
 function! s:saveEntry()
